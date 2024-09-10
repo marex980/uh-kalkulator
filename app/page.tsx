@@ -28,7 +28,7 @@ const Home: React.FC = () => {
       // Calculate total carbs including the current input before adding it to the list
       const total =
         selectedIngredients.reduce(
-          (sum, ingredient) => sum + (ingredient.carbAmount || 0),
+          (sum, ingredient) => sum + (carbAmount || 0),
           0
         ) + carbAmount;
       setTotalCarbs(total);
