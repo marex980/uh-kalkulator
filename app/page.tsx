@@ -1,20 +1,24 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import ingredientsList, { Ingredient } from "../components/IngredientsList"; // Import the list
 
+// Extend Ingredient to include grams and carbAmount
+interface SelectedIngredient extends Ingredient {
+  grams: number;
+  carbAmount: number;
+}
+
 const Home: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
-  const [selectedIngredients, setSelectedIngredients] = useState<Ingredient[]>(
-    []
-  );
+  const [selectedIngredients, setSelectedIngredients] = useState<
+    SelectedIngredient[]
+  >([]);
   const [totalCarbs, setTotalCarbs] = useState<number>(0);
   const [selectedIngredient, setSelectedIngredient] =
     useState<Ingredient | null>(null);
   const [grams, setGrams] = useState<number>(100);
   const [currentCarbAmount, setCurrentCarbAmount] = useState<number>(100);
 
-  // To ensure the component only renders after it has mounted on the client
+  // Ensure the component only renders after it has mounted on the client
   useEffect(() => {
     setHasMounted(true);
   }, []);
@@ -28,7 +32,7 @@ const Home: React.FC = () => {
       // Calculate total carbs including the current input before adding it to the list
       const total =
         selectedIngredients.reduce(
-          (sum, ingredient) => sum + (carbAmount || 0),
+          (sum, ingredient) => sum + ingredient.carbAmount,
           0
         ) + carbAmount;
       setTotalCarbs(total);
@@ -39,7 +43,7 @@ const Home: React.FC = () => {
 
   const handleAddIngredient = () => {
     if (selectedIngredient && grams > 0) {
-      const newIngredient = {
+      const newIngredient: SelectedIngredient = {
         ...selectedIngredient,
         grams,
         carbAmount: currentCarbAmount,
@@ -56,7 +60,7 @@ const Home: React.FC = () => {
 
   const handleDeleteIngredient = (index: number) => {
     const ingredientToRemove = selectedIngredients[index];
-    const updatedTotal = totalCarbs - (carbAmount || 0);
+    const updatedTotal = totalCarbs - ingredientToRemove.carbAmount;
     setTotalCarbs(updatedTotal);
     setSelectedIngredients(selectedIngredients.filter((_, i) => i !== index));
   };
@@ -117,11 +121,7 @@ const Home: React.FC = () => {
           </>
         )}
 
-        <button
-          className="bg-blue-500 text-white p-2 mt-2"
-
-          onClick={handleAddIngredient}
-        >
+        <button className="bg-blue-500 text-white p-2 mt-2" onClick={handleAddIngredient}>
           Dodaj namirnicu
         </button>
       </div>
@@ -130,7 +130,7 @@ const Home: React.FC = () => {
         {selectedIngredients.map((ingredient, index) => (
           <li key={index} className="mb-2">
             {ingredient.name} - {ingredient.grams}g (
-            {ingredient.carbAmount?.toFixed(2)}g ugljenih hidrata)
+            {ingredient.carbAmount.toFixed(2)}g ugljenih hidrata)
             <button
               className="bg-red-500 text-white ml-4 p-1"
               onClick={() => handleDeleteIngredient(index)}
