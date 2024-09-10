@@ -56,7 +56,7 @@ const Home: React.FC = () => {
 
   const handleDeleteIngredient = (index: number) => {
     const ingredientToRemove = selectedIngredients[index];
-    const updatedTotal = totalCarbs - (ingredientToRemove.carbAmount || 0);
+    const updatedTotal = totalCarbs - (carbAmount || 0);
     setTotalCarbs(updatedTotal);
     setSelectedIngredients(selectedIngredients.filter((_, i) => i !== index));
   };
