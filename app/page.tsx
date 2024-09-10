@@ -1,3 +1,5 @@
+'use client'
+
 import { useEffect, useState } from "react";
 import ingredientsList, { Ingredient } from "../components/IngredientsList"; // Import the list
 
