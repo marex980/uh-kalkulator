@@ -18,12 +18,12 @@ export interface Ingredient {
     { name: "Ћуфте у парадајз сосу", carbsPer100g: 8 },
     { name: "Колач", carbsPer100g: 50 },
     { name: "Пасуљ са сувим месом", carbsPer100g: 20 },
-    { name: "Ђувеч", carbsPer100g: 10 },
-    { name: "Месо - Фаширана шницла", carbsPer100g: 17 },
+    { name: "Ђувеч", carbsPer100g: 12 },
+    { name: "Месо - Фаширана шницла", carbsPer100g: 20 },
     { name: "Супа са кнедлама", carbsPer100g: 5 },
-    { name: "Мусака од кромпира", carbsPer100g: 14 },
-    { name: "Супа пилећа", carbsPer100g: 3 },
-    { name: "Месо - печена пилетина", carbsPer100g: 3 },
+    { name: "Мусака од кромпира", carbsPer100g: 15 },
+    { name: "Супа пилећа", carbsPer100g: 0 },
+    { name: "Месо - печена пилетина", carbsPer100g: 0 },
     { name: "Боранија са јунетином", carbsPer100g: 7 },
   ];
   
