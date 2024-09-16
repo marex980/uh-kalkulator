@@ -128,7 +128,7 @@ const Home: React.FC = () => {
         </button>
       </div>
 
-      <ul className="mt-4">
+      <ul className="mt-4 text-left">
         {selectedIngredients.map((ingredient, index) => (
           <li key={index} className="mb-2">
             {ingredient.name} - {ingredient.grams}g (
@@ -143,7 +143,7 @@ const Home: React.FC = () => {
         ))}
       </ul>
 
-      <div className="mt-4">
+      <div className="mt-4 text-left border-t-2">
         <strong>Ukupno ugljenih hidrata: {totalCarbs.toFixed(2)}g</strong>
       </div>
 
