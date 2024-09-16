@@ -131,8 +131,8 @@ const Home: React.FC = () => {
       <ul className="mt-4 text-left">
         {selectedIngredients.map((ingredient, index) => (
           <li key={index} className="mb-2">
-             {ingredient.name} - {ingredient.grams}g (
-              <span className={"text-2xl"}>{ingredient.carbAmount.toFixed(2)}g ugljenih hidrata</span>)
+            {ingredient.name} - {ingredient.grams}g (
+           <span className="text-xl font-bold"> {ingredient.carbAmount.toFixed(2)}g ugljenih hidrata</span>)
             <button
               className="bg-red-500 text-white ml-4 p-1"
               onClick={() => handleDeleteIngredient(index)}
