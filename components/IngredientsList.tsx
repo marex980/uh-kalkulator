@@ -10,7 +10,7 @@ export interface Ingredient {
     { name: "Месо - батак/карабатак", carbsPer100g: 0 },
     { name: "Сатараш", carbsPer100g: 7 },
     { name: "Хлеб - парче", carbsPer100g: 15 },
-    { name: "Купус Сладак са јунетином", carbsPer100g: 6 },
+    { name: "Купус сладак са јунетином", carbsPer100g: 6 },
     { name: "Чорба - крем", carbsPer100g: 5 },
     { name: "Месо - печење", carbsPer100g: 0 },
     { name: "Поврће мешано", carbsPer100g: 7 },
