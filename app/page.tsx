@@ -55,7 +55,7 @@ const Home: React.FC = () => {
 
       // Clear the input fields after adding the ingredient
       setSelectedIngredient(null);
-      setGrams(0);
+      setGrams(100);
       setCurrentCarbAmount(0);
     }
   };
