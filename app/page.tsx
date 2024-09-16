@@ -77,7 +77,7 @@ const Home: React.FC = () => {
   }
 
   return (
-    <main className="text-center m-auto p-4">
+    <main className="text-center m-auto p-4 max-w-4xl">
       <h1 className="text-xl font-bold mb-4">Kalkulator Ugljenih hidrata</h1>
       <div>
         <label htmlFor="ingredient" className="block mb-2">
@@ -128,7 +128,7 @@ const Home: React.FC = () => {
         </button>
       </div>
 
-      <ul className="mt-4 text-left">
+      <ul className="mt-4 text-left border-t-2">
         {selectedIngredients.map((ingredient, index) => (
           <li key={index} className="mb-2">
             {ingredient.name} - {ingredient.grams}g (
