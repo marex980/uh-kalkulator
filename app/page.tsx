@@ -143,8 +143,8 @@ const Home: React.FC = () => {
         ))}
       </ul>
 
-      <div className="mt-4 text-left border-t-2">
-        <strong>Ukupno ugljenih hidrata: {totalCarbs.toFixed(2)}g</strong>
+      <div className="mt-4 text-left border-t-2 py-4">
+        <strong>Ukupno ugljenih hidrata: <span className={"text-5xl"}>{totalCarbs.toFixed(2)}</span>g</strong>
       </div>
 
       <button
