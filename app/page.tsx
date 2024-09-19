@@ -1,62 +1,101 @@
-'use client'
+'use client';
 
-import { useEffect, useState } from "react";
-import ingredientsList, { Ingredient } from "../components/IngredientsList"; // Import the list
+import { useState, useEffect } from "react";
+import { gql, useQuery, useMutation } from '@apollo/client';
 
-// Extend Ingredient to include grams and carbAmount
-interface SelectedIngredient extends Ingredient {
+// GraphQL queries and mutations
+const GET_INGREDIENTS = gql`
+  query GetIngredients {
+    ingredients {
+      id
+      name
+      carbsPer100g
+    }
+  }
+`;
+
+const ADD_INGREDIENT = gql`
+  mutation AddIngredient($name: String!, $carbsPer100g: Float!) {
+    addIngredient(name: $name, carbsPer100g: $carbsPer100g) {
+      id
+      name
+      carbsPer100g
+    }
+  }
+`;
+
+// const DELETE_INGREDIENT = gql`
+//   mutation DeleteIngredient($id: Int!) {
+//     deleteIngredient(id: $id)
+//   }
+// `;
+
+interface SelectedIngredient {
+  id: number;
+  name: string;
+  carbsPer100g: number;
   grams: number;
   carbAmount: number;
 }
 
 const Home: React.FC = () => {
   const [hasMounted, setHasMounted] = useState(false);
-  const [selectedIngredients, setSelectedIngredients] = useState<
-    SelectedIngredient[]
-  >([]);
+  const [selectedIngredients, setSelectedIngredients] = useState<SelectedIngredient[]>([]);
   const [totalCarbs, setTotalCarbs] = useState<number>(0);
-  const [selectedIngredient, setSelectedIngredient] =
-    useState<Ingredient | null>(null);
+  const [selectedIngredient, setSelectedIngredient] = useState<{ id: number; name: string; carbsPer100g: number } | null>(null);
   const [grams, setGrams] = useState<number>(100);
   const [currentCarbAmount, setCurrentCarbAmount] = useState<number>(100);
 
-  // Ensure the component only renders after it has mounted on the client
+  const { loading, error, data, refetch } = useQuery(GET_INGREDIENTS);
+  const [addIngredientMutation] = useMutation(ADD_INGREDIENT);
+  //const [deleteIngredientMutation] = useMutation(DELETE_INGREDIENT);
+
   useEffect(() => {
     setHasMounted(true);
   }, []);
 
-  // Automatically update carb calculation and total carbs when grams input changes
   useEffect(() => {
     if (selectedIngredient && grams > 0) {
       const carbAmount = (selectedIngredient.carbsPer100g * grams) / 100;
       setCurrentCarbAmount(carbAmount);
 
-      // Calculate total carbs including the current input before adding it to the list
-      const total =
-        selectedIngredients.reduce(
-          (sum, ingredient) => sum + ingredient.carbAmount,
-          0
-        ) + carbAmount;
+      const total = selectedIngredients.reduce(
+        (sum, ingredient) => sum + ingredient.carbAmount,
+        0
+      ) + carbAmount;
       setTotalCarbs(total);
     } else {
       setCurrentCarbAmount(0);
     }
   }, [grams, selectedIngredient, selectedIngredients]);
 
-  const handleAddIngredient = () => {
+  const handleAddIngredient = async () => {
     if (selectedIngredient && grams > 0) {
-      const newIngredient: SelectedIngredient = {
-        ...selectedIngredient,
-        grams,
-        carbAmount: currentCarbAmount,
-      };
+      try {
+        // Call the GraphQL mutation to add the ingredient to the database
+        await addIngredientMutation({
+          variables: {
+            name: selectedIngredient.name,
+            carbsPer100g: selectedIngredient.carbsPer100g,
+          },
+        });
 
-      setSelectedIngredients([...selectedIngredients, newIngredient]);
+        // Refetch the ingredients to get the updated list
+        await refetch();
 
-      // Clear the input fields after adding the ingredient
-      setSelectedIngredient(null);
-      setGrams(100);
-      setCurrentCarbAmount(0);
+        const newIngredient: SelectedIngredient = {
+          ...selectedIngredient,
+          grams,
+          carbAmount: currentCarbAmount,
+        };
+
+        setSelectedIngredients([...selectedIngredients, newIngredient]);
+        setSelectedIngredient(null);
+        setGrams(100);
+        setCurrentCarbAmount(0);
+      } catch (error) {
+        console.error('Error adding ingredient:', error);
+      }
     }
   };
 
@@ -72,9 +111,8 @@ const Home: React.FC = () => {
     setTotalCarbs(0);
   };
 
-  if (!hasMounted) {
-    return null; // Avoid rendering the component server-side
-  }
+  if (!hasMounted || loading) return null;
+  if (error) return <p>Error loading ingredients</p>;
 
   return (
     <main className="text-center m-auto p-4 max-w-4xl">
@@ -88,17 +126,17 @@ const Home: React.FC = () => {
           className="text-black border p-2 mb-4"
           value={selectedIngredient?.name || ""}
           onChange={(e) => {
-            const selected = ingredientsList.find(
-              (ingredient) => ingredient.name === e.target.value
+            const selected = data.ingredients.find(
+              (ingredient: { name: string }) => ingredient.name === e.target.value
             );
             setSelectedIngredient(selected || null);
           }}
         >
           <option value="">-- Izaberi namirnicu --</option>
-          {ingredientsList
-            .sort((a, b) => a.name.localeCompare(b.name)) // Sort the list alphabetically
-            .map((ingredient) => (
-              <option key={ingredient.name} value={ingredient.name}>
+          {data?.ingredients
+            .sort((a: any, b: any) => a.name.localeCompare(b.name))
+            .map((ingredient: { id: number; name: string }) => (
+              <option key={ingredient.id} value={ingredient.name}>
                 {ingredient.name}
               </option>
             ))}
@@ -117,7 +155,7 @@ const Home: React.FC = () => {
               onChange={(e) => setGrams(Number(e.target.value))}
             />
             <p>
-              Ugljenih hidtrata u {grams}g {selectedIngredient.name}:{" "}
+              Ugljenih hidrata u {grams}g {selectedIngredient.name}:{" "}
               {currentCarbAmount.toFixed(2)}g
             </p>
           </>
@@ -132,7 +170,7 @@ const Home: React.FC = () => {
         {selectedIngredients.map((ingredient, index) => (
           <li key={index} className="mb-2">
             {ingredient.name} - {ingredient.grams}g (
-           <span className="text-xl font-bold"> {ingredient.carbAmount.toFixed(2)}g ugljenih hidrata</span>)
+            <span className="text-xl font-bold">{ingredient.carbAmount.toFixed(2)}g ugljenih hidrata</span>)
             <button
               className="bg-red-500 text-white ml-4 p-1"
               onClick={() => handleDeleteIngredient(index)}

@@ -1,0 +1,14 @@
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Ingredient {
+  id          Int     @id @default(autoincrement())
+  name        String  @unique
+  carbsPer100g Float
+}
