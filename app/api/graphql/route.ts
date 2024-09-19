@@ -23,23 +23,35 @@ const typeDefs = gql`
   }
 `;
 
+interface Ingredient {
+  id: number;
+  name: string;
+  carbsPer100g: number;
+}
+
 const resolvers = {
   Query: {
-    ingredients: async () => await prisma.ingredient.findMany(),
+    ingredients: async (): Promise<Ingredient[]> => await prisma.ingredient.findMany(),
   },
   Mutation: {
-    addIngredient: async (_: any, { name, carbsPer100g }: { name: string, carbsPer100g: number }) => {
+    addIngredient: async (
+      _: unknown, 
+      { name, carbsPer100g }: { name: string, carbsPer100g: number }
+    ): Promise<Ingredient> => {
       return await prisma.ingredient.create({
         data: { name, carbsPer100g },
       });
     },
-    updateIngredient: async (_: any, { id, name, carbsPer100g }: { id: number, name: string, carbsPer100g: number }) => {
+    updateIngredient: async (
+      _: unknown, 
+      { id, name, carbsPer100g }: { id: number, name: string, carbsPer100g: number }
+    ): Promise<Ingredient> => {
       return await prisma.ingredient.update({
         where: { id },
         data: { name, carbsPer100g },
       });
     },
-    deleteIngredient: async (_: any, { id }: { id: number }) => {
+    deleteIngredient: async (_: unknown, { id }: { id: number }): Promise<boolean> => {
       await prisma.ingredient.delete({ where: { id } });
       return true;
     },

@@ -46,7 +46,9 @@ const Home: React.FC = () => {
   const [grams, setGrams] = useState<number>(100);
   const [currentCarbAmount, setCurrentCarbAmount] = useState<number>(100);
 
-  const { loading, error, data, refetch } = useQuery(GET_INGREDIENTS);
+  //const { loading, error, data, refetch } = useQuery(GET_INGREDIENTS);
+  const { loading, error, data, refetch } = useQuery<{ ingredients: { id: number; name: string; carbsPer100g: number }[] }>(GET_INGREDIENTS);
+
   const [addIngredientMutation] = useMutation(ADD_INGREDIENT);
   //const [deleteIngredientMutation] = useMutation(DELETE_INGREDIENT);
 
@@ -134,12 +136,19 @@ const Home: React.FC = () => {
         >
           <option value="">-- Izaberi namirnicu --</option>
           {data?.ingredients
-            .sort((a: any, b: any) => a.name.localeCompare(b.name))
+            .sort((a, b) => a.name.localeCompare(b.name))
             .map((ingredient: { id: number; name: string }) => (
               <option key={ingredient.id} value={ingredient.name}>
                 {ingredient.name}
               </option>
             ))}
+          {/* {data?.ingredients
+            .sort((a: any, b: any) => a.name.localeCompare(b.name))
+            .map((ingredient: { id: number; name: string }) => (
+              <option key={ingredient.id} value={ingredient.name}>
+                {ingredient.name}
+              </option>
+            ))} */}
         </select>
 
         {selectedIngredient && (
