@@ -128,10 +128,12 @@ const Home: React.FC = () => {
           className="text-black border p-2 mb-4"
           value={selectedIngredient?.name || ""}
           onChange={(e) => {
-            const selected = data.ingredients.find(
-              (ingredient: { name: string }) => ingredient.name === e.target.value
-            );
-            setSelectedIngredient(selected || null);
+            if (data?.ingredients) { // Add this check to ensure data is not undefined
+              const selected = data.ingredients.find(
+                (ingredient: { name: string }) => ingredient.name === e.target.value
+              );
+              setSelectedIngredient(selected || null);
+            }
           }}
         >
           <option value="">-- Izaberi namirnicu --</option>
@@ -142,15 +144,7 @@ const Home: React.FC = () => {
                 {ingredient.name}
               </option>
             ))}
-          {/* {data?.ingredients
-            .sort((a: any, b: any) => a.name.localeCompare(b.name))
-            .map((ingredient: { id: number; name: string }) => (
-              <option key={ingredient.id} value={ingredient.name}>
-                {ingredient.name}
-              </option>
-            ))} */}
         </select>
-
         {selectedIngredient && (
           <>
             <label htmlFor="grams" className="block mb-2">
