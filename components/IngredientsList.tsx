@@ -25,6 +25,8 @@ export interface Ingredient {
     { name: "Супа пилећа", carbsPer100g: 0 },
     { name: "Месо - печена пилетина", carbsPer100g: 0 },
     { name: "Боранија са јунетином", carbsPer100g: 7 },
+    { name: "Месо - ћевапи", carbsPer100g: 1 },
+    { name: "Помфрит", carbsPer100g: 20 },
   ];
   
   export default ingredientsList;
